@@ -11,9 +11,8 @@ spec:
     targetPort: 8443
   selector:
     app: fineract-server
-    tier: backend
-  type: LoadBalancer
-
+  sessionAffinity: None
+  type: ClusterIP
 ---
 
 apiVersion: apps/v1
@@ -83,14 +82,14 @@ kind: Ingress
 metadata:
   name: fineract-ingress
   annotations:
+    kubernetes.io/ingress.class: nginx
     nginx.ingress.kubernetes.io/configuration-snippet: |
-      if ($http_host = "us.ibank.financial") {
-      more_set_headers "Fineract-Platform-TenantId: $http_host";
+      if ( $http_referer ~ "us.ibank.financial" ) {
+        more_set_headers "Fineract-Platform-TenantId: ibank-usa";
       }
 
-    nginx.ingress.kubernetes.io/configuration-snippet: |
-      if ($http_host = "in.ibank.financial") {
-      more_set_headers "Fineract-Platform-TenantId: $http_host";
+      if ( $http_referer ~ "in.ibank.financial" ) {
+        more_set_headers "Fineract-Platform-TenantId: ibank-india";
       }
 spec:
  rules:
