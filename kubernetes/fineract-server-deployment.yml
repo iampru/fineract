@@ -95,3 +95,29 @@ spec:
         ports:
         - containerPort: 8443
           name: fineract-server
+---
+
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  name: mifos-ca
+  annotations:
+    nginx.ingress.kubernetes.io/configuration-snippet: |
+      if ($http_host = "us.ibank.financial") {
+        more_set_headers "Fineract-Platform-TenantId: $http_host";
+      }
+
+   nginx.ingress.kubernetes.io/configuration-snippet: |
+     if ($http_host = "in.ibank.financial") {
+       more_set_headers  "Fineract-Platform-TenantId: $http_host";
+     }
+spec:
+ rules:
+ - host: us-pf.ibank.financial
+   http:
+     paths:
+     - backend:
+         serviceName: mifos-ca
+         servicePort: 80
+       path: /api
+---
