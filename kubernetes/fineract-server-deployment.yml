@@ -100,7 +100,7 @@ spec:
 apiVersion: extensions/v1beta1
 kind: Ingress
 metadata:
-  name: mifos-ca
+  name: fineract-ingress
   annotations:
     nginx.ingress.kubernetes.io/configuration-snippet: |
       if ($http_host = "us.ibank.financial") {
@@ -117,7 +117,7 @@ spec:
    http:
      paths:
      - backend:
-         serviceName: mifos-ca
+         serviceName: fineract-ingress
          servicePort: 80
        path: /api
 ---
